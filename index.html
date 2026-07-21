@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Surprise for Nurul ✨</title>
+    <style>
+        /* --- RESET & BASIC STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background-color: #1a0b16; /* Deep romantic dark */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* For floating hearts */
+            position: relative;
+        }
+
+        /* --- TAP TO PLAY OVERLAY --- */
+        #audio-unlock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 11, 22, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .unlock-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        .tap-text { font-size: 1.2rem; color: #ff69b4; font-weight: bold; }
+        .tap-subtext { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; }
+
+        /* --- UI ELEMENTS (MUSIC) --- */
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        #music-control:hover { opacity: 1; transform: scale(1.1); }
+
+        /* --- CONTAINERS & ANIMATIONS --- */
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: opacity 0.5s, transform 0.5s;
+            position: relative;
+            z-index: 10;
+        }
+
+        .fade-in { animation: fadeInAnimation 1s ease-in forwards; }
+        .slide-up { animation: slideUpAnimation 0.8s ease-out forwards; }
+        .slide-down { animation: slideDownAnimation 0.8s ease-out forwards; }
+        
+        @keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpAnimation { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideDownAnimation { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- CONTENT STYLING --- */
+        .moon-icon { font-size: 3rem; color: #ffeb3b; filter: drop-shadow(0 0 10px rgba(255, 235, 59, 0.5)); margin-bottom: 0.5rem; }
+        
+        h1 { color: #ff69b4; font-size: 2.2rem; margin-bottom: 1rem; text-shadow: 0 0 15px rgba(255, 105, 180, 0.7); }
+        h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        
+        .sub-message { font-size: 1rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; line-height: 1.6; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: linear-gradient(45deg, #ff69b4, #e040fb);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6); }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #555; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .hidden { display: none !important; opacity: 0; }
+
+        /* --- COUNTDOWN --- */
+        #countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 1.5rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+        }
+        .time-block { text-align: center; }
+        .time-value { font-size: 1.8rem; font-weight: bold; color: #ff69b4; }
+        .time-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); text-transform: uppercase; }
+
+        /* --- SPINNER WHEEL --- */
+        .wheel-container {
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        #wheel {
+            font-size: 1.3rem;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        #wheel.spinning {
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px #ff69b4;
+        }
+
+        /* --- FLOATING HEARTS ANIMATION --- */
+        .heart {
+            position: fixed;
+            bottom: -50px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+            animation: floatHearts linear forwards;
+        }
+        @keyframes floatHearts {
+            to {
+                transform: translateY(-110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY TO ENABLE MUSIC INSTANTLY ON FIRST TOUCH -->
+    <div id="audio-unlock-overlay">
+        <div class="unlock-card">
+            <div class="tap-text">tap anywhere to open✨</div>
+            <div class="tap-subtext">if you dekat school slowkan volume 🎵</div>
+        </div>
+    </div>
+
+    <!-- MUSIC PLAYER -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-control" title="Toggle Music">🎵</button>
+
+    <!-- SECTION 1: WELCOME -->
+    <div id="welcome-section" class="container slide-up">
+        <div class="moon-icon">🌙</div>
+        <h1>Our First Date</h1>
+        <h2>Hi Nurul!</h2>
+        <p class="sub-message">
+            Since this is our first date instead of asking "Where should we eat?" I made a website to let fate decide.
+        </p>
+        <p class="sub-message">Check how long we have left then spin the wheel ✨</p>
+        <button id="begin-date-btn" class="btn">Begin Our Date ✨</button>
+    </div>
+
+    <!-- SECTION 2: PICKER (Spinner and Countdown) -->
+    <div id="picker-section" class="container hidden fade-in">
+        <h2>Our Destiny at Sunway Carnival Mall 🎡</h2>
+        <p class="sub-message">Press the button below and let's see where our first date takes us!</p>
+
+        <!-- Dynamic Countdown -->
+        <div id="countdown-timer">
+            <div class="time-block"><div class="time-value" id="days">00</div><div class="time-label">Days</div></div>
+            <div class="time-block"><div class="time-value" id="hours">00</div><div class="time-label">Hours</div></div>
+            <div class="time-block"><div class="time-value" id="minutes">00</div><div class="time-label">Mins</div></div>
+            <div class="time-block"><div class="time-value" id="seconds">00</div><div class="time-label">Secs</div></div>
+        </div>
+
+        <!-- The Spinner Wheel -->
+        <div class="wheel-container">
+            <div id="wheel">Press Spin!</div>
+            <button id="spin-btn" class="btn">Spin the Wheel!</button>
+        </div>
+        
+        <!-- Final Message -->
+        <div id="final-destination-message" class="hidden slide-down">
+            <p class="sub-message">bagitau i what you got from that random pick okay. see you there soon!</p>
+        </div>
+    </div>
+
+    <script>
+        // TARGET TIME: 24 July 2026 at 14:00 (2:00 PM)
+        const TARGET_DATE_STRING = "2026-07-24T14:00:00"; 
+        
+        // DISPLAY LIST FOR THE WHEEL SPINNER ANIMATION
+        const DISPLAY_RESTAURANTS = [
+            'Oriental Kopi 🍞',
+            'Penyet Penyet.com 🍗',
+            'Boat Noodle 🍜',
+            'The Chicken Rice Shop 🐔',
+            'Sukiya 🍲',
+            '4 Fingers 🍗',
+            'SHABU-YO 🥩',
+            'Mr. Dakgalbi 🍗',
+            'Thong Bowl 🍜',
+            "Nando's 🍗",
+            "Johnny's Restaurant 🍲",
+            'Texas Chicken 🍗'
+        ];
+
+        // RANKED WEIGHTED PROBABILITY POOL
+        const WEIGHTED_RESTAURANTS = [
+            // RANK 1: Oriental Kopi (Highest Chance - 10 Entries)
+            'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞',
+            'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞', 'Oriental Kopi 🍞',
+
+            // RANK 2: Penyet Penyet.com (Medium-High Chance - 6 Entries)
+            'Penyet Penyet.com 🍗', 'Penyet Penyet.com 🍗', 'Penyet Penyet.com 🍗',
+            'Penyet Penyet.com 🍗', 'Penyet Penyet.com 🍗', 'Penyet Penyet.com 🍗',
+
+            // RANK 3: Boat Noodle (Moderate Chance - 3 Entries)
+            'Boat Noodle 🍜', 'Boat Noodle 🍜', 'Boat Noodle 🍜',
+
+            // RANK 4: Low Probability Others (Baseline - 1 Entry Each)
+            'The Chicken Rice Shop 🐔',
+            'Sukiya 🍲',
+            '4 Fingers 🍗',
+            'SHABU-YO 🥩',
+            'Mr. Dakgalbi 🍗',
+            'Thong Bowl 🍜',
+            "Nando's 🍗",
+            "Johnny's Restaurant 🍲",
+            'Texas Chicken 🍗'
+        ];
+
+        const welcomeSection = document.getElementById('welcome-section');
+        const pickerSection = document.getElementById('picker-section');
+        const beginDateBtn = document.getElementById('begin-date-btn');
+        const bgMusic = document.getElementById('bg-music');
+        const musicControl = document.getElementById('music-control');
+        const finalMessage = document.getElementById('final-destination-message');
+        const overlay = document.getElementById('audio-unlock-overlay');
+
+        let isMusicPlaying = false;
+
+        function startMusic() {
+            if (!isMusicPlaying) {
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    musicControl.innerText = '🎵';
+                }).catch(err => console.log("Audio waiting for user tap."));
+            }
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicControl.innerText = '🔇';
+                isMusicPlaying = false;
+            } else {
+                startMusic();
+            }
+        }
+
+        overlay.addEventListener('click', () => {
+            startMusic();
+            startFloatingHearts();
+            
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 800);
+        });
+
+        musicControl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMusic();
+        });
+
+        beginDateBtn.addEventListener('click', () => {
+            welcomeSection.classList.remove('slide-up');
+            welcomeSection.style.transform = 'translateY(-100vh)';
+            welcomeSection.style.opacity = '0';
+
+            setTimeout(() => {
+                welcomeSection.classList.add('hidden');
+                pickerSection.classList.remove('hidden');
+                startCountdown();
+            }, 600);
+        });
+
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spin-btn');
+
+        spinBtn.addEventListener('click', () => {
+            spinBtn.disabled = true;
+            spinBtn.innerText = "Finding our fate...";
+            wheel.classList.add('spinning');
+            finalMessage.classList.add('hidden');
+
+            let spinInterval = setInterval(() => {
+                const randomIdx = Math.floor(Math.random() * DISPLAY_RESTAURANTS.length);
+                wheel.innerText = DISPLAY_RESTAURANTS[randomIdx];
+            }, 70);
+
+            setTimeout(() => {
+                clearInterval(spinInterval);
+                wheel.classList.remove('spinning');
+
+                const finalIdx = Math.floor(Math.random() * WEIGHTED_RESTAURANTS.length);
+                const result = WEIGHTED_RESTAURANTS[finalIdx];
+                wheel.innerText = result;
+                
+                wheel.style.borderColor = '#4caf50';
+                wheel.style.color = '#fff';
+                wheel.style.fontWeight = 'bold';
+                spinBtn.innerText = "Fate has Decided!";
+
+                setTimeout(() => { finalMessage.classList.remove('hidden'); }, 400);
+            }, 3000);
+        });
+
+        function startCountdown() {
+            const targetDate = new Date(TARGET_DATE_STRING).getTime();
+
+            function update() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    document.getElementById('countdown-timer').innerHTML = "<h3>Our date has arrived! ❤️</h3>";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = String(days).padStart(2, '0');
+                document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+            }
+
+            update();
+            setInterval(update, 1000);
+        }
+
+        function startFloatingHearts() {
+            const colors = ['#ff69b4', '#e040fb', '#fff'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 5000);
+            }, 400);
+        }
+    </script>
+</body>
+</html>
