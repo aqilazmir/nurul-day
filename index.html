@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our First Date ❤️</title>
+  <link rel="stylesheet" href="style.css" />index.html.
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Music -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="stars"></div>
+
+  <div class="container">
+
+    <div class="intro">
+      <h1>🌙 Our First Date</h1>
+      <h2>Hi Nurul ❤️</h2>
+      <p>
+        Before our first date on <b>24 July 2026</b>,<br>
+        I wanted to make something just for you.
+      </p>
+      <p>
+        Instead of asking <i>“Where should we eat?”</i>,<br>
+        I made this little surprise.
+      </p>
+      <p class="signature">— Aqil</p>
+
+      <button id="startBtn">Begin Our Date ✨</button>
+    </div>
+
+    <div id="pickerSection" class="hidden">
+
+      <div class="music-control">
+        <button id="musicBtn">🎵 Play Music</button>
+      </div>
+
+      <h2>🍽️ Pick Our Restaurant</h2>
+
+      <div class="wheel-card">
+        <div id="restaurantResult" class="result">Tap Spin ❤️</div>
+        <button onclick="spinRestaurant()">🎡 Spin Restaurant</button>
+      </div>
+
+      <h2>🥤 Pick Our Drink</h2>
+
+      <div class="wheel-card">
+        <div id="drinkResult" class="result">Tap Spin ❤️</div>
+        <button onclick="spinDrink()">☕ Spin Drink</button>
+      </div>
+
+      <div id="finalMessage" class="hidden final">
+        <h2>💖 It's a Date!</h2>
+        <p>
+          Whatever we got from the wheel,<br>
+          I know the best part will be spending the day with you.
+        </p>
+        <p>
+          <b>See you on 24 July 2026, Nurul.</b>
+        </p>
+        <p class="signature">Aqil ❤️</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
